@@ -55,7 +55,7 @@ Open this URL in a web browser on the same network to download the file(s).
 ## Author
 
 - [@makestatic](https://github.com/makestatic)
-- [Comunity](https://github.com/makestatic/droplink/graphs/contributors)
+- [Community](https://github.com/makestatic/droplink/graphs/contributors)
 
 
 ## Contributing

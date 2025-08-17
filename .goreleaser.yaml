@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
+
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - id: droplink
+    binary: droplink
+    main: ./cmd/droplink/main.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - arm
+      - i386
+    goamd64:
+      - v3
+    goarm64:
+      - v9
+
+checksum:
+  name_template: 'CHECKSUMS.txt'
+  algorithm: sha256
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    name_template: '{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}'
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  header: >-
+    <h1>Droplink {{ .Tag }} IS OUT!</h1>
+    by using the [installation script](https://github.com/makestatic/droplink?tab=readme-ov-file#building) it will download the latest version.
+    <br/>
+
+  footer: >-
+
+    <br/>
+    <br/>
+    <br/>
+    <sub>Released by [GoReleaser](https://github.com/goreleaser/goreleaser).</sub>

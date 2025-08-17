@@ -1,0 +1,54 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+  APP_NAME: droplink
+  SRC: ./cmd/droplink
+  BIN_DIR: ./bin
+
+tasks:
+  default:
+    cmds:
+      - task: build
+
+  build:
+    desc: Build debug binary
+    cmds:
+      - go mod tidy
+      - mkdir -p {{.BIN_DIR}}
+      - go build -o {{.BIN_DIR}}/{{.APP_NAME}} {{.SRC}}
+
+  release:
+    desc: Build optimized release binary
+    cmds:
+      - go mod tidy
+      - mkdir -p {{.BIN_DIR}}
+      - >
+        CGO_ENABLED=0
+        go build
+        -trimpath
+        -ldflags "-s -w"
+        -o {{.BIN_DIR}}/{{.APP_NAME}} {{.SRC}}
+
+  run:
+    desc: Build and run
+    deps: [build]
+    cmds:
+      - ./{{.BIN_DIR}}/{{.APP_NAME}} {{.CLI_ARGS}}
+
+  run-release:
+    desc: Build and run
+    deps: [release]
+    cmds:
+      - ./{{.BIN_DIR}}/{{.APP_NAME}} {{.CLI_ARGS}}
+
+  test:
+    desc: Run tests
+    cmds:
+      - go mod tidy
+      - go test ./... -v
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf {{.BIN_DIR}}
